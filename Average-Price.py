@@ -9,7 +9,7 @@ df = (df[(df['purchase_date'].between(df['start_date'], df['end_date'])) | (df['
 df.fillna(value=0,inplace=True)
 df['Total_price'] = df['units']*df['price']
 df = df.groupby('product_id').agg({'Total_price':'sum','units':'sum'}).reset_index()
-df['average_price'] = df['Total_price'] / df['units']
-df['average_price'] = np.where(df['units'] != 0, df['Total_price'] / df['units'], 0)
+df['average_price'] = df.apply(lambda x: x['Total_price'] / x['units'] if x['units'] != 0 else 0,axis=1)
+# df['average_price'] = np.where(df['units'] != 0, df['Total_price'] / df['units'], 0)
 df = df[['product_id','average_price']].round(2)
 print(df)
